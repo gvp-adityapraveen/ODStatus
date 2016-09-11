@@ -6,13 +6,16 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
+import projects.personal.aditya.emailbuilder.EmailBuilder;
+
 /**
  * Hello world!
  *
  */
-public class ODStatus {
+public class ODStatus extends EmailBuilder {
 	
 	private String urlToAccess;
+	private String emailBody;
 
 	private WebDriver createDriver() {
 		WebDriver driver = new FirefoxDriver();
@@ -59,7 +62,8 @@ public class ODStatus {
 		}catch(InterruptedException e)
 		{}
 		WebElement statusElement = driver.findElement(By.tagName("h3"));
-		System.out.println(statusElement.getText());
+		this.emailBody = statusElement.getText();
+		
 		if(driver!=null)
 		{
 			driver.quit();
@@ -71,10 +75,26 @@ public class ODStatus {
 	{
 		Thread.sleep(timeToSleep);
 	}
+	
+	private void createHtmlForEmail()
+	{
+		this.setFileNameOfHTML("email");
+		this.setTitleOfHtml("ODTitle");
+		this.setBodyContent();
+		this.createEntireHtml();
+	}
+	
 
 	public static void main(String[] args) {
 		ODStatus od = new ODStatus();
 		od.setUrlToAccess("http://jntukexams.net/status1");
 		od.getODStatus();
+		od.createHtmlForEmail();
 	}
+
+	@Override
+	public String setBodyContent() {
+		return "<h3>"+this.emailBody+"</h3>";
+	}
+
 }
